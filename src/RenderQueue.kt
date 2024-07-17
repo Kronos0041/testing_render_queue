@@ -1,14 +1,11 @@
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 
 class RenderQueue {
 
     private val queue: Queue<RenderTask> = LinkedList()
     private var isShutdown = AtomicBoolean(false)
-    private val lock = ReentrantLock()
 
     @Synchronized
     // Добавление задачи в очередь для рендеринга
@@ -25,9 +22,7 @@ class RenderQueue {
     @Throws(InterruptedException::class)
     // Берем следующую задачу из очереди
     fun takeTask(): RenderTask? {
-        lock.withLock {
-            return if (queue.isNotEmpty()) queue.poll() else null
-        }
+        return if (queue.isNotEmpty()) queue.poll() else null
     }
 
     // Выключаем очередь рендера и чистим очередь
